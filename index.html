@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday Jaisurya!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/confetti-js/0.0.18/confetti.min.js"
+    ></script>
+    <style>
+      body {
+        background: url("https://www.transparenttextures.com/patterns/stardust.png"),
+          linear-gradient(135deg, #121212, #1e1e1e, #292929);
+        color: white;
+        text-align: center;
+        font-family: "Poppins", sans-serif;
+        overflow: hidden;
+        position: relative;
+      }
+      .hidden {
+        display: none;
+      }
+      .countdown-box span {
+        display: inline-block;
+        min-width: 50px;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 8px 12px;
+        border-radius: 8px;
+        box-shadow: inset 0px 0px 8px rgba(255, 255, 255, 0.3);
+        transition: transform 0.2s ease-out, opacity 0.3s ease-in-out;
+      }
+
+      .animate {
+        opacity: 0;
+        transform: scale(1.5);
+      }
+
+      @media (max-width: 480px) {
+        .countdown-box {
+          font-size: 1.2rem;
+          flex-direction: column;
+          gap: 5px;
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .circle {
+        position: absolute;
+        transition: opacity 0.3s ease-in-out;
+      }
+      #countdown {
+        display: flex;
+        justify-content: center;
+        gap: 10px; /* Reduced gap for a tighter layout */
+        flex-wrap: wrap;
+        font-family: Arial, sans-serif;
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      .time-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px;
+        border-radius: 8px;
+        width: 60px; /* Reduced width */
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .number {
+        font-size: 1.8rem; /* Smaller number size */
+        font-weight: bold;
+        color: #ffcc00;
+        text-shadow: 0px 0px 8px rgba(255, 255, 0, 0.8);
+      }
+
+      .label {
+        font-size: 0.7rem; /* Reduced label size */
+        color: white;
+      }
+
+      @media (max-width: 500px) {
+        .number {
+          font-size: 1.5rem; /* Further reduced for mobile */
+        }
+        .label {
+          font-size: 0.6rem;
+        }
+        .time-box {
+          width: 50px; /* Adjusted width for compactness */
+          padding: 6px;
+        }
+      }
+    </style>
+  </head>
+  <body class="flex flex-col items-center justify-center min-h-screen px-4">
+    <h1 id="suprise-text" class="text-4xl font-bold mt-10 mb-6">Surprise</h1>
+
+    <div class="countdown-box mt-6 py-4 px-6" id="countdown"></div>
+
+    <canvas
+      id="confetti-canvas"
+      class="hidden fixed top-0 left-0 w-full h-full"
+    ></canvas>
+
+    <div
+      id="birthday-message"
+      class="hidden text-5xl font-bold text-yellow-400 mt-10"
+    >
+      🎉 Happy Birthday Jaisurya! 🎉
+    </div>
+
+    <div id="wish-section" class="hidden mt-10">
+      <h2 class="text-xl mb-4">Make a Birthday Wish!</h2>
+      <input
+        type="text"
+        id="wish"
+        placeholder="Enter your wish here..."
+        class="block mb-4 p-3 border border-gray-500 rounded text-center"
+      />
+      <button
+        onclick="submitWish()"
+        class="mt-4 px-6 py-3 bg-orange-500 text-white rounded hover:bg-orange-600 transition duration-300"
+      >
+        Submit
+      </button>
+      <div
+        id="wish-output"
+        class="text-lg mt-6 text-center mx-auto max-w-md"
+      ></div>
+    </div>
+
+    <script>
+      function createCircles() {
+        const container = document.getElementById("suprise-text"); // Attach to "Surprise" text
+        for (let i = 0; i < 10; i++) {
+          let circle = document.createElement("div");
+          circle.classList.add("circle");
+          circle.style.position = "absolute";
+          circle.style.width = "20px";
+          circle.style.height = "20px";
+          circle.style.backgroundColor = "rgba(0, 242, 255, 0.6)";
+          circle.style.borderRadius = "50%";
+          circle.style.opacity = "0.7";
+          circle.style.left = Math.random() * 100 + "%";
+          circle.style.top = Math.random() * 100 + "%";
+          circle.style.animation = `float ${
+            Math.random() * 2 + 1.5
+          }s infinite alternate ease-in-out`;
+
+          container.appendChild(circle);
+        }
+      }
+
+      // Run function
+      createCircles();
+
+      function updateCountdown() {
+        const birthday = new Date("March 8, 2025 00:00:00").getTime();
+        let interval = setInterval(() => {
+          const now = new Date().getTime();
+          const difference = birthday - now;
+
+          if (difference > 0) {
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor(
+              (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            );
+            const minutes = Math.floor(
+              (difference % (1000 * 60 * 60)) / (1000 * 60)
+            );
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            let countdown = document.getElementById("countdown");
+
+            // Apply animation class
+            countdown.innerHTML = `
+                <div class="time-box"><span class="number">${days}</span><span class="label">Days</span></div>
+                <div class="time-box"><span class="number">${hours}</span><span class="label">Hours</span></div>
+                <div class="time-box"><span class="number">${minutes}</span><span class="label">Minutes</span></div>
+                <div class="time-box"><span class="number">${seconds}</span><span class="label">Seconds</span></div>
+            `;
+          } else {
+            clearInterval(interval);
+            interval = null;
+            document.getElementById("countdown").classList.add("hidden");
+            document.getElementById("suprise-text").classList.add("hidden");
+            document
+              .getElementById("birthday-message")
+              .classList.remove("hidden");
+            document.getElementById("wish-section").classList.remove("hidden");
+            startConfetti();
+          }
+        }, 1000);
+      }
+
+      updateCountdown();
+
+      function startConfetti() {
+        const confettiSettings = { target: "confetti-canvas" };
+        const confetti = new ConfettiGenerator(confettiSettings);
+        document.getElementById("confetti-canvas").classList.remove("hidden");
+        confetti.render();
+      }
+
+      function submitWish() {
+        let wishInput = document.getElementById("wish").value.trim();
+        let wishOutput = document.getElementById("wish-output");
+        let submitButton = document.querySelector("#wish-section button");
+        let wishInputField = document.getElementById("wish");
+        let wishHeading = document.querySelector("#wish-section h2");
+
+        if (wishInput === "") {
+          wishOutput.innerHTML = "Please enter a wish!";
+          return;
+        }
+
+        let responses = [
+          "✨ The stars are aligned! Your wish is on its way! 🌟",
+          "🔮 A secret force is making your wish come true! Just believe! ✨",
+          "🎈 A birthday miracle has been set in motion for you! 🎉",
+          "💫 The universe has received your request. Stay tuned! 🚀",
+          "🌠 A shooting star just carried your wish to the heavens! Make another! 💖",
+        ];
+
+        let randomResponse =
+          responses[Math.floor(Math.random() * responses.length)];
+
+        submitButton.style.display = "none";
+        wishInputField.style.display = "none";
+        wishHeading.style.display = "none";
+
+        wishOutput.innerHTML = randomResponse;
+        wishOutput.style.opacity = "1";
+
+        startConfetti();
+        document.getElementById("video-section").classList.remove("hidden");
+      }
+    </script>
+  </body>
+</html>
